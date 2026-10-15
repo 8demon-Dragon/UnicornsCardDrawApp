@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>獨角獸卡牌心靈抽卡</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts Inter & Noto Serif TC -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
@@ -29,7 +26,6 @@
         .rotate-y-180 {
             transform: rotateY(180deg);
         }
-        /* Custom scrollbar for card grid view */
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -44,10 +40,10 @@
 </head>
 <body class="flex flex-col min-h-screen">
 
-    <header class="w-full py-4 px-6 flex justify-between items-center bg-black/20 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
+    <header class="w-full py-4 px-6 flex justify-between items-center bg-black/30 backdrop-blur-md border-b border-white/10 sticky top-0 z-50 shadow-md">
         <div class="flex items-center space-x-2">
             <i class="fa-solid fa-wand-magic-sparkles text-amber-300 text-xl animate-pulse"></i>
-            <h1 class="text-lg font-bold tracking-wider text-amber-100 font-serif">獨角獸心靈抽卡</h1>
+            <h1 class="text-base sm:text-lg font-bold tracking-wider text-amber-100 font-serif">獨角獸心靈抽卡</h1>
         </div>
         <div class="flex items-center space-x-3">
             <button onclick="openGallery()" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-xs font-medium rounded-full border border-white/20 transition-all flex items-center space-x-1 shadow-sm">
@@ -62,8 +58,7 @@
 
     <main class="flex-1 flex flex-col items-center justify-center p-4 max-w-md mx-auto w-full relative">
         
-        <!-- Instruction Banner / Status -->
-        <div id="status-message" class="text-center mb-6 text-indigo-200 text-sm tracking-wide bg-white/5 px-4 py-1.5 rounded-full border border-white/10 backdrop-blur-sm">
+        <div id="status-message" class="text-center mb-6 text-indigo-200 text-sm tracking-wide bg-white/5 px-4 py-1.5 rounded-full border border-white/10 backdrop-blur-sm shadow-inner">
             請保持內心平靜，點擊牌背抽取今日指引
         </div>
 
@@ -74,7 +69,6 @@
                 <!-- Card Back (Default state) -->
                 <div class="absolute inset-0 w-full h-full backface-hidden rounded-2xl border-2 border-amber-300/40 bg-gradient-to-br from-indigo-950 via-purple-900 to-indigo-900 flex flex-col items-center justify-center p-6 shadow-2xl overflow-hidden group">
                     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-500/10 via-transparent to-transparent opacity-60"></div>
-                    <!-- Decorative border & pattern -->
                     <div class="absolute inset-3 border border-amber-400/20 rounded-xl pointer-events-none"></div>
                     <div class="w-20 h-20 rounded-full bg-amber-400/10 flex items-center justify-center mb-4 border border-amber-300/30 group-hover:scale-110 transition-transform duration-500 shadow-[0_0_20px_rgba(251,191,36,0.3)]">
                         <i class="fa-solid fa-horse text-4xl text-amber-300"></i>
@@ -87,16 +81,23 @@
                 </div>
 
                 <!-- Card Front (Revealed state) -->
-                <div class="absolute inset-0 w-full h-full backface-hidden rotate-y-180 rounded-2xl border-2 border-amber-400/60 bg-slate-900 flex flex-col overflow-hidden shadow-2xl">
-                    <div class="relative flex-1 bg-black/40 overflow-hidden flex items-center justify-center">
-                        <img id="card-image" src="" alt="Card Image" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x600/312e81/fbbf24?text=Unicorn+Card'">
-                        <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-mono text-amber-300 border border-amber-400/30" id="card-number-badge">
+                <div class="absolute inset-0 w-full h-full backface-hidden rotate-y-180 rounded-2xl border-2 border-amber-400/60 bg-slate-950 flex flex-col overflow-hidden shadow-2xl">
+                    <div class="relative flex-1 bg-black/60 overflow-hidden flex items-center justify-center">
+                        <img id="card-image" src="" alt="Card Image" class="w-full h-full object-cover" onerror="window.handleImageError(this)">
+                        <!-- Fallback container if image fails -->
+                        <div id="card-fallback" class="absolute inset-0 hidden flex flex-col items-center justify-center p-6 bg-gradient-to-br from-indigo-950 to-slate-900 text-center">
+                            <i class="fa-solid fa-horse-head text-5xl text-amber-300 mb-3 opacity-80"></i>
+                            <span id="fallback-card-num" class="text-amber-400 font-mono text-xs mb-1">#01</span>
+                            <h4 id="fallback-card-name" class="text-amber-200 font-serif font-bold text-base mb-2">卡牌名稱</h4>
+                            <p id="fallback-card-desc" class="text-indigo-200 text-xs italic whitespace-pre-line">指引說明</p>
+                        </div>
+                        <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-mono text-amber-300 border border-amber-400/30 shadow" id="card-number-badge">
                             #01
                         </div>
                     </div>
                     <div class="p-4 bg-gradient-to-t from-indigo-950 via-indigo-900/90 to-indigo-950/80 border-t border-white/10 text-center">
                         <h2 id="card-title" class="text-amber-200 font-serif font-bold text-lg mb-1">卡牌名稱</h2>
-                        <p id="card-desc" class="text-indigo-200 text-xs italic">卡牌短句或指引說明</p>
+                        <p id="card-desc" class="text-indigo-200 text-xs italic whitespace-pre-line">卡牌短句或指引說明</p>
                     </div>
                 </div>
 
@@ -140,7 +141,7 @@
         </div>
     </div>
 
-    <!-- Custom Alert Modal (No native alert) -->
+    <!-- Custom Modal (Replaces alert/confirm) -->
     <div id="custom-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-indigo-950 border border-amber-400/40 rounded-2xl max-w-xs w-full p-6 text-center shadow-2xl animate-scale-up">
             <div class="w-12 h-12 rounded-full bg-amber-400/20 text-amber-300 flex items-center justify-center mx-auto mb-4 border border-amber-300/30 text-xl">
@@ -155,24 +156,31 @@
     </div>
 
     <script>
-        // 44 Cards Database Generation
-        // Users can replace image paths later to point to Google Drive exported files or local folder
         const totalCards = 44;
         let cards = [];
-        let drawnCards = []; // Store IDs of drawn cards
+        let drawnCards = [];
         let currentCard = null;
         let isFlipped = false;
         let isAnimating = false;
 
-        // Initialize 44 cards dataset
+        // Define image error fallback handler globally
+        window.handleImageError = function(imgEl) {
+            imgEl.style.display = 'none';
+            const fallbackEl = document.getElementById('card-fallback');
+            if (fallbackEl) {
+                fallbackEl.classList.remove('hidden');
+            }
+        };
+
+        // Initialize 44 cards dataset with names and descriptions
         function initCards() {
             cards = [];
             for (let i = 1; i <= totalCards; i++) {
-                // Predefined names for first few sample cards matching user prompt/images, others as numbered
                 let name = `獨角獸卡 #${i}`;
                 let desc = `探索內在力量與靈性指引`;
                 
-                if (i === 2) { name = "純淨的意圖"; desc = "找到清明。\n放棄你的小我。"; }
+                if (i === 1) { name = "獨角獸之光"; desc = "保持純淨。\n連結你的守護天使。"; }
+                else if (i === 2) { name = "純淨的意圖"; desc = "找到清明。\n放棄你的小我。"; }
                 else if (i === 3) { name = "創造你的願景"; desc = "做會讓你的心歌唱之事。\n你被輕推著向前行。"; }
                 else if (i === 4) { name = "解開關係的羈絆"; desc = "現在就放下。\n寬恕就是自由。"; }
                 else if (i === 5) { name = "新的契機"; desc = "清理你的人生。\n瞥見一扇魔法之門。"; }
@@ -183,11 +191,7 @@
                 else if (i === 10) { name = "取用你的天賦"; desc = "探索你的寶箱。\n接納你的真實本性。"; }
                 else if (i === 11) { name = "尋找徵兆"; desc = "好好注意。\n期待答案。"; }
 
-                // Using placeholder with fallback structure or user can replace img path
-                // For sample cards 2 to 11, we can point to placeholder or local naming convention if user puts them
-                // Here we use a reliable Unsplash/Placeholder format or placeholder text banner
-                let imgPath = `https://placehold.co/400x600/312e81/fbbf24?text=Unicorn+Card+${i}`;
-                
+                let imgPath = `獨角獸${i}.jpg`;
                 cards.push({
                     id: i,
                     name: name,
@@ -197,9 +201,8 @@
             }
         }
 
-        // Load saved state from localStorage if available
         function loadState() {
-            const savedDrawn = localStorage.getItem('unicorn_drawn_cards');
+            const savedDrawn = localStorage.getItem('unicorn_drawn_cards_v3');
             if (savedDrawn) {
                 try {
                     drawnCards = JSON.parse(savedDrawn);
@@ -211,16 +214,18 @@
         }
 
         function saveState() {
-            localStorage.setItem('unicorn_drawn_cards', JSON.stringify(drawnCards));
+            localStorage.setItem('unicorn_drawn_cards_v3', JSON.stringify(drawnCards));
             updateCounterBadge();
         }
 
         function updateCounterBadge() {
             const remaining = totalCards - drawnCards.length;
-            document.getElementById('counter-badge').innerText = `${remaining} / ${totalCards}`;
+            const badge = document.getElementById('counter-badge');
+            if (badge) {
+                badge.innerText = `${remaining} / ${totalCards}`;
+            }
         }
 
-        // Custom Modal helper (replaces alert/confirm)
         function showCustomModal(title, message, iconClass = "fa-circle-exclamation", callback = null) {
             document.getElementById('modal-title').innerText = title;
             document.getElementById('modal-message').innerText = message;
@@ -247,54 +252,60 @@
             document.getElementById('custom-modal').classList.add('hidden');
         }
 
-        // Draw a single card logic
-        function drawCard() {
+        window.drawCard = function() {
             if (isAnimating) return;
 
-            // Check if all cards drawn
             if (drawnCards.length >= totalCards) {
                 showCustomModal("牌局已滿", "44 張獨角獸卡牌已經全部抽完囉！請點擊重新洗牌開始新的一局。", "fa-rotate-right", resetDeck);
                 return;
             }
 
-            // Get available un-drawn cards
             const availableCards = cards.filter(c => !drawnCards.includes(c.id));
             if (availableCards.length === 0) return;
 
-            // Pick random card from available
             const randomIndex = Math.floor(Math.random() * availableCards.length);
             const selectedCard = availableCards[randomIndex];
+            currentCard = selectedCard;
 
             isAnimating = true;
             const cardInner = document.getElementById('card-inner');
 
-            // If card was already flipped, flip back first or directly transition
             if (isFlipped) {
                 cardInner.style.transform = 'rotateY(0deg)';
                 isFlipped = false;
                 setTimeout(() => {
                     setupCardFace(selectedCard);
-                    flipCardShow(cardInner, selectedCard);
+                    flipCardShow(cardInner);
                 }, 350);
             } else {
                 setupCardFace(selectedCard);
-                flipCardShow(cardInner, selectedCard);
+                flipCardShow(cardInner);
             }
 
-            // Record drawn
             drawnCards.push(selectedCard.id);
             saveState();
-        }
+        };
 
         function setupCardFace(card) {
-            document.getElementById('card-image').src = card.image;
+            const imgEl = document.getElementById('card-image');
+            const fallbackEl = document.getElementById('card-fallback');
+            
+            imgEl.style.display = 'block';
+            fallbackEl.classList.add('hidden');
+            
+            imgEl.src = card.image;
             document.getElementById('card-number-badge').innerText = `#${card.id}`;
             document.getElementById('card-title').innerText = card.name;
             document.getElementById('card-desc').innerText = card.desc;
-            document.getElementById('status-message').innerText = `✨ 你抽到了第 ${card.id} 張卡牌`;
+            
+            document.getElementById('fallback-card-num').innerText = `#${card.id}`;
+            document.getElementById('fallback-card-name').innerText = card.name;
+            document.getElementById('fallback-card-desc').innerText = card.desc;
+
+            document.getElementById('status-message').innerText = `✨ 你抽到了第 ${card.id} 張卡牌：${card.name}`;
         }
 
-        function flipCardShow(cardInner, card) {
+        function flipCardShow(cardInner) {
             setTimeout(() => {
                 cardInner.style.transform = 'rotateY(180deg)';
                 isFlipped = true;
@@ -302,10 +313,9 @@
             }, 50);
         }
 
-        // Reset / Shuffle Deck
-        function confirmReset() {
+        window.confirmReset = function() {
             showCustomModal("重新洗牌", "確定要將所有已抽出的卡牌收回牌庫並重新洗牌嗎？", "fa-rotate", resetDeck);
-        }
+        };
 
         function resetDeck() {
             drawnCards = [];
@@ -317,8 +327,7 @@
             document.getElementById('status-message').innerText = "已重新洗牌，請點擊牌背抽取今日指引";
         }
 
-        // Gallery Modal functions
-        function openGallery() {
+        window.openGallery = function() {
             const grid = document.getElementById('card-grid');
             grid.innerHTML = '';
             
@@ -328,12 +337,16 @@
             cards.forEach(card => {
                 const isDrawn = drawnCards.includes(card.id);
                 const cardEl = document.createElement('div');
-                cardEl.className = `relative rounded-xl overflow-hidden border transition-all aspect-[2/3] flex flex-col items-center justify-center p-2 text-center ${isDrawn ? 'bg-indigo-900/60 border-amber-400/50 shadow-md' : 'bg-slate-900/40 border-white/10 opacity-50'}`;
+                cardEl.className = `relative rounded-xl overflow-hidden border transition-all aspect-[2/3] flex flex-col items-center justify-center p-2 text-center shadow ${isDrawn ? 'bg-indigo-900/80 border-amber-400/60' : 'bg-slate-900/50 border-white/10 opacity-50'}`;
                 
                 cardEl.innerHTML = `
                     <div class="absolute top-1 left-1 bg-black/60 px-1.5 py-0.5 rounded text-[10px] font-mono text-amber-300">#${card.id}</div>
-                    <div class="w-full flex-1 mb-1 rounded overflow-hidden bg-black/30 flex items-center justify-center">
-                        <img src="${card.image}" class="w-full h-full object-cover ${isDrawn ? '' : 'filter grayscale'}" onerror="this.src='https://placehold.co/200x300/1e1b4b/94a3b8?text=Card+${card.id}'">
+                    <div class="w-full flex-1 mb-1 rounded overflow-hidden bg-black/40 flex items-center justify-center relative">
+                        <img src="${card.image}" class="w-full h-full object-cover ${isDrawn ? '' : 'filter grayscale'}" onerror="window.handleImageError(this)">
+                        <div class="absolute inset-0 hidden flex-col items-center justify-center p-2 bg-indigo-950 text-center">
+                            <i class="fa-solid fa-horse-head text-amber-300 text-xl mb-1"></i>
+                            <span class="text-[10px] text-amber-200">${card.name}</span>
+                        </div>
                     </div>
                     <span class="text-[11px] font-medium text-amber-100 truncate w-full">${isDrawn ? card.name : '未抽取'}</span>
                 `;
@@ -341,13 +354,12 @@
             });
 
             document.getElementById('gallery-modal').classList.remove('hidden');
-        }
+        };
 
-        function closeGallery() {
+        window.closeGallery = function() {
             document.getElementById('gallery-modal').classList.add('hidden');
-        }
+        };
 
-        // Initialize on window load
         window.onload = function() {
             initCards();
             loadState();
