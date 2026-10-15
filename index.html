@@ -2,7 +2,7 @@
 <html lang="zh-HK">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>獨角獸卡牌心靈抽卡</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -13,6 +13,8 @@
             background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
             color: #f8fafc;
             min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
         }
         .perspective-1000 {
             perspective: 1000px;
@@ -27,7 +29,7 @@
             transform: rotateY(180deg);
         }
         ::-webkit-scrollbar {
-            width: 6px;
+            width: 5px;
         }
         ::-webkit-scrollbar-track {
             background: rgba(255, 255, 255, 0.05);
@@ -40,12 +42,12 @@
 </head>
 <body class="flex flex-col min-h-screen">
 
-    <header class="w-full py-4 px-6 flex justify-between items-center bg-black/30 backdrop-blur-md border-b border-white/10 sticky top-0 z-50 shadow-md">
+    <header class="w-full py-3 px-4 sm:px-6 flex justify-between items-center bg-black/30 backdrop-blur-md border-b border-white/10 sticky top-0 z-40 shadow-md">
         <div class="flex items-center space-x-2">
-            <i class="fa-solid fa-wand-magic-sparkles text-amber-300 text-xl animate-pulse"></i>
-            <h1 class="text-base sm:text-lg font-bold tracking-wider text-amber-100 font-serif">獨角獸心靈抽卡</h1>
+            <i class="fa-solid fa-wand-magic-sparkles text-amber-300 text-lg animate-pulse"></i>
+            <h1 class="text-sm sm:text-lg font-bold tracking-wider text-amber-100 font-serif">獨角獸心靈抽卡</h1>
         </div>
-        <div class="flex items-center space-x-3">
+        <div class="flex items-center space-x-2 sm:space-x-3">
             <button onclick="openGallery()" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-xs font-medium rounded-full border border-white/20 transition-all flex items-center space-x-1 shadow-sm">
                 <i class="fa-solid fa-th-large text-amber-300"></i>
                 <span id="counter-badge">44 / 44</span>
@@ -56,14 +58,14 @@
         </div>
     </header>
 
-    <main class="flex-1 flex flex-col items-center justify-center p-4 max-w-md mx-auto w-full relative">
+    <main class="flex-1 flex flex-col items-center justify-between p-3 sm:p-4 max-w-md mx-auto w-full relative">
         
-        <div id="status-message" class="text-center mb-6 text-indigo-200 text-sm tracking-wide bg-white/5 px-4 py-1.5 rounded-full border border-white/10 backdrop-blur-sm shadow-inner">
+        <div id="status-message" class="text-center text-indigo-200 text-xs sm:text-sm tracking-wide bg-white/5 px-4 py-1.5 rounded-full border border-white/10 backdrop-blur-sm shadow-inner shrink-0 my-1">
             請保持內心平靜，點擊牌背抽取今日指引
         </div>
 
         <!-- Card Container with 3D Flip Effect -->
-        <div class="w-72 sm:w-80 h-[450px] sm:h-[500px] relative perspective-1000 mb-8 cursor-pointer" id="card-deck-container" onclick="drawCard()">
+        <div class="w-72 sm:w-80 h-[430px] sm:h-[480px] relative perspective-1000 my-1 cursor-pointer shrink-0" id="card-deck-container" onclick="drawCard()">
             <div id="card-inner" class="w-full h-full relative transform-style-3d transition-transform duration-700 shadow-2xl rounded-2xl">
                 
                 <!-- Card Back (Default state) -->
@@ -82,35 +84,42 @@
 
                 <!-- Card Front (Revealed state) -->
                 <div class="absolute inset-0 w-full h-full backface-hidden rotate-y-180 rounded-2xl border-2 border-amber-400/60 bg-slate-950 flex flex-col overflow-hidden shadow-2xl">
-                    <div class="relative flex-1 bg-black/60 overflow-hidden flex items-center justify-center">
-                        <img id="card-image" src="" alt="Card Image" class="w-full h-full object-cover" onerror="window.handleImageError(this)">
+                    <!-- Image container taking upper part -->
+                    <div class="relative flex-1 bg-black/60 overflow-hidden flex items-center justify-center min-h-0">
+                        <img id="card-image" src="" alt="Card Image" class="w-full h-full object-contain bg-black/80 cursor-pointer" onclick="event.stopPropagation(); showLargeImage(currentCard)" onerror="window.handleImageError(this)">
+                        
                         <!-- Fallback container if image fails -->
-                        <div id="card-fallback" class="absolute inset-0 hidden flex flex-col items-center justify-center p-6 bg-gradient-to-br from-indigo-950 to-slate-900 text-center">
-                            <i class="fa-solid fa-horse-head text-5xl text-amber-300 mb-3 opacity-80"></i>
+                        <div id="card-fallback" class="absolute inset-0 hidden flex flex-col items-center justify-center p-4 bg-gradient-to-br from-indigo-950 to-slate-900 text-center">
+                            <i class="fa-solid fa-horse-head text-4xl text-amber-300 mb-2 opacity-80"></i>
                             <span id="fallback-card-num" class="text-amber-400 font-mono text-xs mb-1">#01</span>
-                            <h4 id="fallback-card-name" class="text-amber-200 font-serif font-bold text-base mb-2">卡牌名稱</h4>
-                            <p id="fallback-card-desc" class="text-indigo-200 text-xs italic whitespace-pre-line">指引說明</p>
+                            <h4 id="fallback-card-name" class="text-amber-200 font-serif font-bold text-sm mb-1">卡牌名稱</h4>
+                            <p id="fallback-card-desc" class="text-indigo-200 text-[11px] italic whitespace-pre-line">指引說明</p>
                         </div>
-                        <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-mono text-amber-300 border border-amber-400/30 shadow" id="card-number-badge">
+
+                        <div class="absolute top-2 right-2 bg-black/70 backdrop-blur-md px-2.5 py-0.5 rounded-full text-xs font-mono text-amber-300 border border-amber-400/30 shadow pointer-events-none" id="card-number-badge">
                             #01
                         </div>
+                        <div class="absolute bottom-2 right-2 bg-black/70 backdrop-blur-md p-1.5 rounded-full text-amber-300 border border-amber-400/30 text-xs shadow hover:bg-amber-500/20 transition-all cursor-pointer" onclick="event.stopPropagation(); showLargeImage(currentCard)" title="放大檢視">
+                            <i class="fa-solid fa-expand"></i>
+                        </div>
                     </div>
-                    <div class="p-4 bg-gradient-to-t from-indigo-950 via-indigo-900/90 to-indigo-950/80 border-t border-white/10 text-center">
-                        <h2 id="card-title" class="text-amber-200 font-serif font-bold text-lg mb-1">卡牌名稱</h2>
-                        <p id="card-desc" class="text-indigo-200 text-xs italic whitespace-pre-line">卡牌短句或指引說明</p>
+
+                    <!-- Text container with proper height and padding to ensure full visibility -->
+                    <div class="px-3 py-2.5 bg-indigo-950 border-t border-white/10 text-center shrink-0 min-h-[105px] max-h-[140px] flex flex-col justify-center overflow-y-auto">
+                        <h2 id="card-title" class="text-amber-200 font-serif font-bold text-sm sm:text-base mb-1 leading-snug">卡牌名稱</h2>
+                        <p id="card-desc" class="text-indigo-200 text-[11px] sm:text-xs italic whitespace-pre-line leading-relaxed">卡牌短句或指引說明</p>
                     </div>
                 </div>
 
             </div>
         </div>
 
-        <!-- Action Controls -->
-        <div class="flex space-x-4 w-full max-w-xs">
-            <button onclick="drawCard()" id="draw-btn" class="flex-1 py-3.5 px-6 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-xl shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center space-x-2 active:scale-95">
+        <div class="flex space-x-3 w-full max-w-xs shrink-0 my-1">
+            <button onclick="drawCard()" id="draw-btn" class="flex-1 py-3 px-5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-xl shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center space-x-2 active:scale-95 text-sm">
                 <i class="fa-solid fa-hand-sparkles"></i>
                 <span>抽取卡片</span>
             </button>
-            <button onclick="openGallery()" class="py-3.5 px-5 bg-white/10 hover:bg-white/20 text-indigo-100 font-medium rounded-xl border border-white/20 transition-all flex items-center justify-center space-x-1 active:scale-95">
+            <button onclick="openGallery()" class="py-3 px-4 bg-white/10 hover:bg-white/20 text-indigo-100 font-medium rounded-xl border border-white/20 transition-all flex items-center justify-center space-x-1 active:scale-95 text-sm">
                 <i class="fa-solid fa-images text-amber-300"></i>
                 <span>牌庫</span>
             </button>
@@ -118,32 +127,45 @@
 
     </main>
 
-    <!-- Gallery Modal -->
-    <div id="gallery-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex flex-col transition-opacity duration-300">
-        <div class="p-4 flex justify-between items-center border-b border-white/10 bg-black/40">
+    <div id="gallery-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex flex-col transition-opacity duration-300">
+        <div class="p-4 flex justify-between items-center border-b border-white/10 bg-black/50">
             <div>
-                <h2 class="text-lg font-serif font-bold text-amber-200">全部 44 張獨角獸卡牌</h2>
-                <p class="text-xs text-indigo-300">已抽過: <span id="drawn-count">0</span> / 44</p>
+                <h2 class="text-base sm:text-lg font-serif font-bold text-amber-200">全部 44 張獨角獸卡牌</h2>
+                <p class="text-xs text-indigo-300">已抽過: <span id="drawn-count">0</span> / 44 (點擊卡片可看彩色大圖)</p>
             </div>
             <button onclick="closeGallery()" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-all">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
         </div>
-        <div class="flex-1 overflow-y-auto p-4">
-            <div id="card-grid" class="grid grid-cols-3 sm:grid-cols-4 gap-3 max-w-2xl mx-auto">
+        <div class="flex-1 overflow-y-auto p-3 sm:p-4">
+            <div id="card-grid" class="grid grid-cols-3 sm:grid-cols-4 gap-2.5 max-w-2xl mx-auto">
                 <!-- Dynamically populated card items -->
             </div>
         </div>
-        <div class="p-4 bg-black/40 border-t border-white/10 flex justify-center">
-            <button onclick="closeGallery()" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-medium shadow-lg transition-all">
+        <div class="p-3 bg-black/50 border-t border-white/10 flex justify-center">
+            <button onclick="closeGallery()" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs sm:text-sm font-medium shadow-lg transition-all">
                 返回抽卡
             </button>
         </div>
     </div>
 
-    <!-- Custom Modal (Replaces alert/confirm) -->
+    <!-- Zoom Modal -->
+    <div id="zoom-modal" class="fixed inset-0 bg-black/90 backdrop-blur-lg z-50 hidden flex flex-col items-center justify-center p-4" onclick="closeZoomModal()">
+        <div class="relative max-w-lg w-full max-h-[85vh] flex flex-col items-center" onclick="event.stopPropagation()">
+            <button onclick="closeZoomModal()" class="absolute -top-12 right-0 w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all text-xl shadow-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img id="zoom-img" src="" alt="Large Card View" class="max-h-[62vh] w-auto object-contain rounded-xl shadow-2xl border-2 border-amber-400/50 mb-3" onerror="window.handleImageError(this)">
+            <div class="bg-indigo-950/95 border border-amber-400/30 p-3.5 rounded-xl text-center w-full shadow-xl">
+                <h3 id="zoom-title" class="text-amber-200 font-serif font-bold text-base mb-1">卡牌名稱</h3>
+                <p id="zoom-desc" class="text-indigo-200 text-xs italic whitespace-pre-line leading-relaxed">卡牌描述</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Alert/Confirm Modal -->
     <div id="custom-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-indigo-950 border border-amber-400/40 rounded-2xl max-w-xs w-full p-6 text-center shadow-2xl animate-scale-up">
+        <div class="bg-indigo-950 border border-amber-400/40 rounded-2xl max-w-xs w-full p-6 text-center shadow-2xl">
             <div class="w-12 h-12 rounded-full bg-amber-400/20 text-amber-300 flex items-center justify-center mx-auto mb-4 border border-amber-300/30 text-xl">
                 <i id="modal-icon" class="fa-solid fa-circle-exclamation"></i>
             </div>
@@ -163,35 +185,69 @@
         let isFlipped = false;
         let isAnimating = false;
 
-        // Define image error fallback handler globally
         window.handleImageError = function(imgEl) {
             imgEl.style.display = 'none';
-            const fallbackEl = document.getElementById('card-fallback');
+            const fallbackEl = imgEl.parentElement.querySelector('#card-fallback') || document.getElementById('card-fallback');
             if (fallbackEl) {
                 fallbackEl.classList.remove('hidden');
             }
         };
 
-        // Initialize 44 cards dataset with names and descriptions
+        // Initialize 44 cards dataset with exact metadata for cards 1-44
         function initCards() {
             cards = [];
-            for (let i = 1; i <= totalCards; i++) {
-                let name = `獨角獸卡 #${i}`;
-                let desc = `探索內在力量與靈性指引`;
-                
-                if (i === 1) { name = "獨角獸之光"; desc = "保持純淨。\n連結你的守護天使。"; }
-                else if (i === 2) { name = "純淨的意圖"; desc = "找到清明。\n放棄你的小我。"; }
-                else if (i === 3) { name = "創造你的願景"; desc = "做會讓你的心歌唱之事。\n你被輕推著向前行。"; }
-                else if (i === 4) { name = "解開關係的羈絆"; desc = "現在就放下。\n寬恕就是自由。"; }
-                else if (i === 5) { name = "新的契機"; desc = "清理你的人生。\n瞥見一扇魔法之門。"; }
-                else if (i === 6) { name = "進入魔法"; desc = "活在現在。\n抓住當下。"; }
-                else if (i === 7) { name = "聆聽你的心"; desc = "喚醒心靈能力。\n調頻進入無限。"; }
-                else if (i === 8) { name = "樂於接受豐盛"; desc = "相信你值得。\n接受豐富與繁榮。"; }
-                else if (i === 9) { name = "敞開你的心"; desc = "愛自己。\n敢於脆弱易感。"; }
-                else if (i === 10) { name = "取用你的天賦"; desc = "探索你的寶箱。\n接納你的真實本性。"; }
-                else if (i === 11) { name = "尋找徵兆"; desc = "好好注意。\n期待答案。"; }
+            const cardDataMap = {
+                1: { name: "你的個人獨角獸", desc: "沐浴在純淨的愛之中。\n保持開放，迎接獨角獸魔法。" },
+                2: { name: "純淨的意圖", desc: "找到清明。\n放棄你的小我。" },
+                3: { name: "創造你的願景", desc: "做會讓你的心歌唱之事。\n你被輕推著向前行。" },
+                4: { name: "解開關係的羈絆", desc: "現在就放下。\n寬恕就是自由。" },
+                5: { name: "新的契機", desc: "清理你的人生。\n瞥見一扇魔法之門。" },
+                6: { name: "進入魔法", desc: "活在現在。\n抓住當下。" },
+                7: { name: "聆聽你的心", desc: "喚醒心靈能力。\n調頻進入無限。" },
+                8: { name: "樂於接受豐盛", desc: "相信你值得。\n接受豐富與繁榮。" },
+                9: { name: "敞開你的心", desc: "愛自己。\n敢於脆弱易感。" },
+                10: { name: "取用你的天賦", desc: "探索你的寶箱。\n接納你的真實本性。" },
+                11: { name: "尋找徵兆", desc: "好好注意。\n期待答案。" },
+                12: { name: "真理的自由", desc: "誠實地溝通。\n做真正的自己。" },
+                13: { name: "創意性的解決方案", desc: "打破常規思考。\n從更高的視角看待事物。" },
+                14: { name: "靠自己的力量站穩", desc: "對你的願景滿懷熱情。\n帶來正向的改變。" },
+                15: { name: "宇宙彩虹", desc: "尋找那罐金子。\n接受喜悅。" },
+                16: { name: "靈魂療癒", desc: "與你的本質連成一氣。\n看見你的真實色彩。" },
+                17: { name: "順流而行", desc: "放鬆並信任。\n接受正在發生事。" },
+                18: { name: "令人煥然一新的綠洲", desc: "滋養你自己。\n累積力氣。" },
+                19: { name: "白光之繭", desc: "在完美的愛中休息。\n了解「一」。" },
+                20: { name: "玫瑰金宇宙池", desc: "沐浴在宇宙的愛之中。\n好好吸收智慧。" },
+                21: { name: "魔法水晶洞穴", desc: "開啟你的內在之光。\n展現你的天賦。" },
+                22: { name: "顯化你的夢想", desc: "聚焦在你的願景。\n尋求滿意和知足感。" },
+                23: { name: "靈魂的滿足", desc: "向你的獨一無二致敬。\n做讓你感覺美好的事。" },
+                24: { name: "大量的祝福", desc: "敞開自己，好好接收。\n將它傳出去。" },
+                25: { name: "充滿關愛的社群", desc: "參與且成為其中的一分子。\n豐富你的人生。" },
+                26: { name: "紫色火焰", desc: "祈請宇宙鑽石紫色火焰。\n轉變不是愛的一切。" },
+                27: { name: "揚昇火焰", desc: "與光融合。\n點燃密鑰與密碼。" },
+                28: { name: "基督之光池", desc: "敞開你的心。\n散播無條件的愛。" },
+                29: { name: "聖雄能量", desc: "建立你的光體。\n使你的揚昇加速。" },
+                30: { name: "宇宙鑽石", desc: "散播希望和喜悅。\n照亮世界。" },
+                31: { name: "宇宙祖母綠", desc: "創造完美的健康。\n取用神性豐盛。" },
+                32: { name: "宇宙紅寶石", desc: "成為和平大使。\n實踐宇宙級的精通。" },
+                33: { name: "宇宙藍寶石", desc: "以榮譽和誠信行動。\n說出你的真理。" },
+                34: { name: "宇宙珍珠", desc: "擴展你的心靈天賦。\n打開通往天使世界的大門。" },
+                35: { name: "神性潛能", desc: "履行你的天命。\n成為你所能成的一切。" },
+                36: { name: "成為指路明燈", desc: "啟發他人。\n為他人照亮道路。" },
+                37: { name: "靈性戰士", desc: "向他人展現你是個睿智的領袖。\n指揮宇宙。" },
+                38: { name: "獨角獸能量之門", desc: "集中你的光。\n仔細聆聽訊息。" },
+                39: { name: "揚昇電梯", desc: "為快速的靈性成長做好準備。\n準備好迎接種種機會。" },
+                40: { name: "天琴座星際之門", desc: "擴展你的業力輪。\n進入獨角獸王國。" },
+                41: { name: "恩典法則", desc: "成為你的神性本質。\n在恩典中消融一切。" },
+                42: { name: "合而為「一」", desc: "尋找共同的人性。\n祈請列木里亞之光。" },
+                43: { name: "覺醒", desc: "從更高的視角觀看。\n看見每一個人內在的神性。" },
+                44: { name: "我是臨在", desc: "擴展你的星系門戶。\n如我所是。" }
+            };
 
-                let imgPath = `獨角獸${i}.jpg`;
+            for (let i = 1; i <= totalCards; i++) {
+                let name = cardDataMap[i] ? cardDataMap[i].name : `獨角獸卡 #${i}`;
+                let desc = cardDataMap[i] ? cardDataMap[i].desc : `探索內在力量與靈性指引`;
+                let imgPath = `獨角獸${i}.jpg`; // Filename format: 獨角獸1.jpg, 獨角獸2.jpg... 獨角獸44.jpg
+
                 cards.push({
                     id: i,
                     name: name,
@@ -202,7 +258,7 @@
         }
 
         function loadState() {
-            const savedDrawn = localStorage.getItem('unicorn_drawn_cards_v3');
+            const savedDrawn = localStorage.getItem('unicorn_drawn_cards_v7');
             if (savedDrawn) {
                 try {
                     drawnCards = JSON.parse(savedDrawn);
@@ -214,7 +270,7 @@
         }
 
         function saveState() {
-            localStorage.setItem('unicorn_drawn_cards_v3', JSON.stringify(drawnCards));
+            localStorage.setItem('unicorn_drawn_cards_v7', JSON.stringify(drawnCards));
             updateCounterBadge();
         }
 
@@ -337,18 +393,19 @@
             cards.forEach(card => {
                 const isDrawn = drawnCards.includes(card.id);
                 const cardEl = document.createElement('div');
-                cardEl.className = `relative rounded-xl overflow-hidden border transition-all aspect-[2/3] flex flex-col items-center justify-center p-2 text-center shadow ${isDrawn ? 'bg-indigo-900/80 border-amber-400/60' : 'bg-slate-900/50 border-white/10 opacity-50'}`;
+                cardEl.className = `relative rounded-xl overflow-hidden border transition-all aspect-[2/3] flex flex-col items-center justify-between p-2 text-center shadow cursor-pointer hover:scale-105 ${isDrawn ? 'bg-indigo-900/90 border-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.35)]' : 'bg-indigo-950/70 border-white/20'}`;
                 
+                cardEl.onclick = () => showLargeImage(card);
+
                 cardEl.innerHTML = `
-                    <div class="absolute top-1 left-1 bg-black/60 px-1.5 py-0.5 rounded text-[10px] font-mono text-amber-300">#${card.id}</div>
-                    <div class="w-full flex-1 mb-1 rounded overflow-hidden bg-black/40 flex items-center justify-center relative">
-                        <img src="${card.image}" class="w-full h-full object-cover ${isDrawn ? '' : 'filter grayscale'}" onerror="window.handleImageError(this)">
-                        <div class="absolute inset-0 hidden flex-col items-center justify-center p-2 bg-indigo-950 text-center">
-                            <i class="fa-solid fa-horse-head text-amber-300 text-xl mb-1"></i>
-                            <span class="text-[10px] text-amber-200">${card.name}</span>
-                        </div>
+                    <div class="absolute top-1 left-1 bg-black/70 px-1.5 py-0.5 rounded text-[10px] font-mono text-amber-300 z-10">#${card.id}</div>
+                    <div class="w-full flex-1 mb-1 rounded overflow-hidden bg-black/50 flex items-center justify-center relative">
+                        <img src="${card.image}" class="w-full h-full object-cover" onerror="this.style.display='none'">
                     </div>
-                    <span class="text-[11px] font-medium text-amber-100 truncate w-full">${isDrawn ? card.name : '未抽取'}</span>
+                    <div class="w-full shrink-0">
+                        <span class="text-[11px] font-medium text-amber-100 truncate block w-full">${card.name}</span>
+                        <span class="text-[9px] ${isDrawn ? 'text-amber-300 font-semibold' : 'text-indigo-300'}">${isDrawn ? '✓ 已抽過' : '未抽'}</span>
+                    </div>
                 `;
                 grid.appendChild(cardEl);
             });
@@ -358,6 +415,18 @@
 
         window.closeGallery = function() {
             document.getElementById('gallery-modal').classList.add('hidden');
+        };
+
+        window.showLargeImage = function(card) {
+            if (!card) return;
+            document.getElementById('zoom-img').src = card.image;
+            document.getElementById('zoom-title').innerText = `${card.id}. ${card.name}`;
+            document.getElementById('zoom-desc').innerText = card.desc;
+            document.getElementById('zoom-modal').classList.remove('hidden');
+        };
+
+        window.closeZoomModal = function() {
+            document.getElementById('zoom-modal').classList.add('hidden');
         };
 
         window.onload = function() {
